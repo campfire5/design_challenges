@@ -46,22 +46,17 @@ class _MyHomePageState extends State<MyHomePage> {
               child: SizedBox(
                 width: 200,
                 height: 100,
-                child: Stack(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: 200,
-                      height: 100,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.5),
-                          color: const Color.fromARGB(255, 206, 232, 174)),
+                    CustomPaint(
+                      size: Size(width * 0.4, 40),
+                      painter: TileHeadShapePainter(color: backgroundColor),
                     ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: CustomPaint(
-                        size: const Size(150, 45),
-                        painter: CustomShapePainter(color: backgroundColor),
-                      ),
-                    )
+                    CustomPaint(
+                      size: Size(width, 100),
+                      painter: TileBodyShapePainter(color: backgroundColor),
+                    ),
                   ],
                 ),
               ),
@@ -73,8 +68,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class CustomShapePainter extends CustomPainter {
-  const CustomShapePainter({
+class TileBodyShapePainter extends CustomPainter {
+  const TileBodyShapePainter({
     required this.color,
   });
 
@@ -86,29 +81,17 @@ class CustomShapePainter extends CustomPainter {
       ..color = color
       ..style = PaintingStyle.fill;
 
-    final arcDimension = size.height / 3;
+    const radius = 20.0;
 
-    final path = Path()
-      ..moveTo(0, 0)
-      ..lineTo(
-        size.width,
-        0,
-      )
-      ..lineTo(
-        size.width,
-        size.height,
-      )
-      ..quadraticBezierTo(size.width, size.height - arcDimension,
-          size.width - arcDimension, size.height - arcDimension)
-      ..lineTo(2 * arcDimension, size.height - arcDimension)
-      ..quadraticBezierTo(arcDimension + 3, 30, arcDimension, arcDimension)
-      ..quadraticBezierTo(arcDimension - 3, 0, 0, 0)
-      ..lineTo(
-        0,
-        0,
-      );
-
-    canvas.drawPath(path, paint);
+    canvas.drawRRect(
+      RRect.fromRectAndCorners(
+        Rect.fromLTWH(0, 0, size.width, size.height),
+        topRight: Radius.circular(radius),
+        bottomLeft: Radius.circular(radius),
+        bottomRight: Radius.circular(radius),
+      ),
+      paint,
+    );
   }
 
   @override
@@ -130,8 +113,8 @@ class TileHeadShapePainter extends CustomPainter {
       ..color = color
       ..style = PaintingStyle.fill;
 
-    const arcDimension = 80.0;
-    const tiltValue = 10;
+    const arcDimension = 40.0;
+    const tiltValue = 8.0;
 
     final path = Path()
       ..moveTo(0, 0)
@@ -147,7 +130,7 @@ class TileHeadShapePainter extends CustomPainter {
       )
       ..quadraticBezierTo(
         size.width - arcDimension / 2 + tiltValue,
-        80,
+        arcDimension,
         size.width,
         size.height,
       )
